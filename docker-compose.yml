@@ -1,0 +1,58 @@
+services:
+
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: ominimo_app
+        restart: unless-stopped
+        working_dir: /var/www
+        volumes:
+            - .:/var/www
+            - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - ominimo_network
+        depends_on:
+            db:
+                condition: service_healthy
+
+    webserver:
+        image: nginx:alpine
+        container_name: ominimo_nginx
+        restart: unless-stopped
+        ports:
+            - "8000:80"
+        volumes:
+            - .:/var/www
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        networks:
+            - ominimo_network
+        depends_on:
+            - app
+
+    db:
+        image: mysql:8.0
+        container_name: ominimo_db
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE:-ominimo_blog}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+        volumes:
+            - db_data:/var/lib/mysql
+        ports:
+            - "3307:3306"
+        networks:
+            - ominimo_network
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-root}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+networks:
+    ominimo_network:
+        driver: bridge
+
+volumes:
+    db_data:
+        driver: local
