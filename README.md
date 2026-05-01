@@ -1,58 +1,129 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Ominimo Blog
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A simple blog application built with Laravel as part of the Ominimo Insurance backend developer interview assignment.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- User registration, login, and logout (Laravel Breeze)
+- Create, edit, and delete blog posts (owners only)
+- Leave comments on posts (guests and authenticated users)
+- Delete comments (comment owner or post owner)
+- Admin role — can delete any post or comment
+- Laravel Policies for authorization
+- Database seeders with sample data
+- Fully containerized with Docker
+- 38 feature and unit tests
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tech Stack
 
-## Learning Laravel
+- **Backend:** Laravel 11, PHP 8.3
+- **Database:** MySQL 8
+- **Frontend:** Blade, Tailwind CSS
+- **Auth:** Laravel Breeze
+- **Containerization:** Docker & Docker Compose
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Local Setup (Without Docker)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Requirements
+- PHP 8.3+
+- Composer
+- Node.js 20+
+- MySQL 8
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Steps
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clone the repository
+git clone https://github.com/Hamza-fray/ominimo-blog.git
+cd ominimo-blog
 
-php artisan boost:install
+# 2. Install PHP dependencies
+composer install
+
+# 3. Install Node dependencies and build assets
+npm install && npm run build
+
+# 4. Copy environment file
+cp .env.example .env
+
+# 5. Generate app key
+php artisan key:generate
+
+# 6. Configure your database in .env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ominimo_blog
+DB_USERNAME=root
+DB_PASSWORD=your_password
+
+# 7. Run migrations and seed sample data
+php artisan migrate --seed
+
+# 8. Start the server
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Visit `http://localhost:8000`
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Local Setup (With Docker)
 
-## Code of Conduct
+### Requirements
+- Docker
+- Docker Compose
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Steps
 
-## Security Vulnerabilities
+```bash
+# 1. Clone the repository
+git clone https://github.com/Hamza-fray/ominimo-blog.git
+cd ominimo-blog
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 2. Build and start containers
+docker compose up --build
+```
 
-## License
+Visit `http://localhost:8000`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Docker setup automatically runs migrations and seeds the database on startup.
+
+---
+
+## Sample Credentials (after seeding)
+
+| Role  | Email               | Password |
+|-------|---------------------|----------|
+| Admin | admin@example.com   | password |
+| User  | user@example.com    | password |
+
+---
+
+## Running Tests
+
+```bash
+php artisan test
+```
+
+Expected output: **38 tests passing**
+
+---
+
+## API Routes
+
+| Method | Route | Description | Auth |
+|--------|-------|-------------|------|
+| GET | /posts | List all posts | Public |
+| GET | /posts/create | Create post form | Required |
+| POST | /posts | Store post | Required |
+| GET | /posts/{id} | View post + comments | Public |
+| GET | /posts/{id}/edit | Edit post form | Owner only |
+| PUT | /posts/{id} | Update post | Owner only |
+| DELETE | /posts/{id} | Delete post | Owner/Admin |
+| POST | /posts/{id}/comments | Add comment | Public |
+| DELETE | /comments/{id} | Delete comment | Owner/Admin |
