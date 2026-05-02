@@ -22,7 +22,7 @@ A simple blog application built with Laravel as part of the Ominimo Insurance ba
 - **Database:** MySQL 8
 - **Frontend:** Blade, Tailwind CSS
 - **Auth:** Laravel Breeze
-- **Containerization:** Docker & Docker Compose
+- **Containerization:** Docker and Docker Compose
 
 ---
 
@@ -36,39 +36,42 @@ A simple blog application built with Laravel as part of the Ominimo Insurance ba
 
 ### Steps
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/Hamza-fray/ominimo-blog.git
-cd ominimo-blog
+**1. Clone the repository**
 
-# 2. Install PHP dependencies
-composer install
+    git clone https://github.com/Hamza-fray/ominimo-blog.git
+    cd ominimo-blog
 
-# 3. Install Node dependencies and build assets
-npm install && npm run build
+**2. Install dependencies**
 
-# 4. Copy environment file
-cp .env.example .env
+    composer install
+    npm install && npm run build
 
-# 5. Generate app key
-php artisan key:generate
+**3. Configure environment**
 
-# 6. Configure your database in .env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=ominimo_blog
-DB_USERNAME=root
-DB_PASSWORD=your_password
+    cp .env.example .env
+    php artisan key:generate
 
-# 7. Run migrations and seed sample data
-php artisan migrate --seed
+**4. Update `.env` with your database credentials**
 
-# 8. Start the server
-php artisan serve
-```
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=ominimo_blog
+    DB_USERNAME=root
+    DB_PASSWORD=your_password
 
-Visit `http://localhost:8000`
+**5. Run migrations and seed sample data**
+
+    php artisan migrate --seed
+
+**6. Start the server**
+
+    ./local.sh
+
+Note: local.sh fixes storage permissions and starts the server in one command.
+If you are running locally for the first time without having run Docker before, you can use php artisan serve directly.
+
+Visit http://localhost:8000
 
 ---
 
@@ -80,18 +83,28 @@ Visit `http://localhost:8000`
 
 ### Steps
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/Hamza-fray/ominimo-blog.git
-cd ominimo-blog
+**1. Clone the repository**
 
-# 2. Build and start containers
-docker compose up --build
-```
+    git clone https://github.com/Hamza-fray/ominimo-blog.git
+    cd ominimo-blog
 
-Visit `http://localhost:8000`
+**2. Build and start containers**
 
-The Docker setup automatically runs migrations and seeds the database on startup.
+    docker compose up --build
+
+Note: The Docker setup automatically runs migrations and seeds the database on startup.
+
+Visit http://localhost:8000
+
+---
+
+## Switching Between Docker and Local
+
+Docker changes the ownership of the storage directory to www-data. After stopping Docker, always use:
+
+    ./local.sh
+
+This script restores permissions and starts the server automatically.
 
 ---
 
@@ -106,24 +119,22 @@ The Docker setup automatically runs migrations and seeds the database on startup
 
 ## Running Tests
 
-```bash
-php artisan test
-```
+    php artisan test
 
-Expected output: **38 tests passing**
+Expected output: 38 tests passing
 
 ---
 
-## API Routes
+## Routes
 
-| Method | Route | Description | Auth |
-|--------|-------|-------------|------|
-| GET | /posts | List all posts | Public |
-| GET | /posts/create | Create post form | Required |
-| POST | /posts | Store post | Required |
-| GET | /posts/{id} | View post + comments | Public |
-| GET | /posts/{id}/edit | Edit post form | Owner only |
-| PUT | /posts/{id} | Update post | Owner only |
-| DELETE | /posts/{id} | Delete post | Owner/Admin |
-| POST | /posts/{id}/comments | Add comment | Public |
-| DELETE | /comments/{id} | Delete comment | Owner/Admin |
+| Method | Route                    | Description            | Auth          |
+|--------|--------------------------|------------------------|---------------|
+| GET    | /posts                   | List all posts         | Public        |
+| GET    | /posts/create            | Create post form       | Required      |
+| POST   | /posts                   | Store post             | Required      |
+| GET    | /posts/{id}              | View post and comments | Public        |
+| GET    | /posts/{id}/edit         | Edit post form         | Owner only    |
+| PUT    | /posts/{id}              | Update post            | Owner only    |
+| DELETE | /posts/{id}              | Delete post            | Owner or Admin|
+| POST   | /posts/{id}/comments     | Add comment            | Public        |
+| DELETE | /comments/{id}           | Delete comment         | Owner or Admin|
