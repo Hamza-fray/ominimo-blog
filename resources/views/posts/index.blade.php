@@ -23,6 +23,9 @@
             @empty
                 <p class="text-gray-500">No posts yet.</p>
             @endforelse
+                <div class="mt-6">
+                    {{ $posts->links() }}
+                </div>
         </div>
     </div>
 </x-app-layout>

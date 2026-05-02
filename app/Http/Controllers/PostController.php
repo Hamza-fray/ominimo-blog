@@ -12,7 +12,7 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::with('user')->latest()->get();
+        $posts = Post::with('user')->latest()->paginate(10);
         return view('posts.index', compact('posts'));
     }
 
@@ -30,7 +30,7 @@ class PostController extends Controller
 
         $request->user()->posts()->create($request->only('title', 'content'));
 
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index')->with('success', 'Post created successfully!');
     }
 
     public function show(Post $post)
@@ -56,13 +56,13 @@ class PostController extends Controller
 
         $post->update($request->only('title', 'content'));
 
-        return redirect()->route('posts.show', $post);
+        return redirect()->route('posts.show', $post)->with('success', 'Post updated successfully!');
     }
 
     public function destroy(Post $post)
     {
         $this->authorize('delete', $post);
         $post->delete();
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index')->with('success', 'Post deleted successfully!');
     }
 }
