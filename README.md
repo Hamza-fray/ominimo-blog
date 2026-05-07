@@ -90,7 +90,7 @@ Visit http://localhost:8000
 **2. Configure Docker environment**
 
     cp .env.docker.example .env.docker
-    php artisan key:generate --env=docker
+   
 **3. Build and start containers**
 
     docker compose up --build
