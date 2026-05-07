@@ -28,10 +28,10 @@ WORKDIR /var/www
 COPY . .
 
 # Install PHP dependencies
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN composer install --no-interaction --optimize-autoloader
 
 # Install Node dependencies and build assets
-RUN npm install && npm run build
+RUN npm install --include=dev&& npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www \
